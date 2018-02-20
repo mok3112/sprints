@@ -1,24 +1,66 @@
-.App {
-  text-align: center;
+.header {
+  background-color: #202020;
+  height: 50px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.sidebar {
+  position: absolute;
+  left: 0;
+  top: 50px;
+  bottom: 0;
+  width: 300px;
+  background-color: #202020;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.sidebar-item {
+  margin: 20px 10px;
 }
 
-.App-intro {
-  font-size: large;
+.sidebar-link {
+  color: #ffffff;
+  text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.app-title {
+  font-size: 18pt;
+}
+
+.header-item {
+  color: #ffffff;
+  margin: 20px 30px;
+  text-decoration: none;
+}
+
+span {
+  display: inline-block;
+}
+
+.task-list {
+  margin-left: 320px;
+}
+
+.task-list-item {
+  padding: 40px 0px;
+  margin: 30px;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.task-name-item {
+  padding-left: 20px;
+  width: 700px;
+}
+
+.task-time-item {
+  width: 500px;
+}
+
+.task-points-item {
+  width: 250px;
+  padding-right: 20px;
+
+}
+
+.task-adder {
+  margin-left: 350px;
 }
