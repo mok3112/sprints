@@ -1,7 +1,7 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from .models import Task
 
 
@@ -33,7 +33,7 @@ class EndpointTestCases(TestCase):
 
     def test_api_can_get_a_task(self):
         response = self.client.get(
-            reverse('tasks:details', kwargs={'pk': self.task.pk}),
+            reverse('tasks:details', kwargs={'pk': self.task.id}),
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -42,7 +42,7 @@ class EndpointTestCases(TestCase):
     def test_api_can_update_a_task(self):
         changed_task = {'name': 'different name'}
         response = self.client.put(
-            reverse('tasks:details', kwargs={'pk': self.task.pk}),
+            reverse('tasks:details', kwargs={'pk': self.task.id}),
             changed_task
         )
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

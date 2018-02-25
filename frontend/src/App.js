@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios'
 
+const POINT_HOUR_RATIO = 2;
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -57,8 +59,14 @@ class TaskList extends Component {
       <div className="task-list">
         {this.state.taskList.map(item =>
           <div className="task-list-item">
-            <span className="task-name-item"> {item.name} </span>
-            <span className="task-time-item"> {item.time} mins </span>
+              <div>
+                  <span className="task-name-item"> {item.name} </span>
+                  <span className="task-time-item"> {item.time} mins </span>
+                  <span className="task-points-item"> {item.time / 60 * POINT_HOUR_RATIO} pts</span>
+              </div>
+              <div className="start-button">
+                  <button>START</button>
+              </div>
           </div>
         )}
       </div>
@@ -66,6 +74,10 @@ class TaskList extends Component {
   }
 }
 
+/**
+ * Top navigation bar for the website.
+ * Links to navigate back to the homepage, see info about the app, log in, and sign up.
+ */
 const Header = () =>
       <div className="topnav header">
         <a href="#" className="header-item app-title">My App</a>
@@ -74,6 +86,9 @@ const Header = () =>
         <a href="#signup" className="header-item">Sign Up</a>
       </div>;
 
+/**
+ * Persistent sidebar, links to search through tasks, see user statistics, and view custom goals per user.
+ */
 const Sidebar = () =>
   <div className="sidebar">
     <div className="sidebar-item">
@@ -89,6 +104,7 @@ const Sidebar = () =>
       <a href="#" className="sidebar-link">My Goals</a>
     </div>
   </div>;
+
 
 
 class TaskAdderForm extends Component {

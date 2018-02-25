@@ -64,3 +64,11 @@ span {
 .task-adder {
   margin-left: 350px;
 }
+
+.start-button {
+  position: relative;
+  margin-left: 75%;
+  margin-top: 20px;
+  outline: none;
+  border-width: 0;
+}
