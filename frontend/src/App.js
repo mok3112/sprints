@@ -20,13 +20,8 @@ class App extends Component {
           });
     }
 
-    componentDidUpdate() {
-        this.componentDidMount();
-    }
-
 
     render() {
-        console.log(this.state.tasks);
         return (
         <div>
             <Header />
@@ -38,12 +33,91 @@ class App extends Component {
   }
 }
 
+class Timer extends Component {
+    // TODO: pass in task ID in props, handle GET request in this component instead of in TaskList
+    constructor(props) {
+        super(props);
+        this.state = {
+            taskID: parseInt(props.taskID, 10),
+            time: 0,
+            timerID: null,
+        };
+
+        this.onTick = this.onTick.bind(this);
+    }
+
+    componentDidMount() {
+        axios.get(`http://localhost:8000/sprints/api/tasks/${this.state.taskID}/?format=json`)
+            .then(response => {
+                const time = response.data.time;
+                this.setState({time: time * 60, timerID: setInterval(this.onTick, 1000)});
+            });
+    }
+
+
+    componentWillUnmount() {
+        this.setState({ timerID: null });
+    }
+
+    onTick() {
+        let newTime = this.state.time;
+        if (newTime === 0) {
+            clearInterval(this.state.timerID);
+        } else {
+            newTime--;
+            this.setState({ time: newTime });
+        }
+    }
+
+    render() {
+        let minutes = Math.floor(this.state.time / 60) + "";
+        let seconds = this.state.time % 60 + "";
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        return(
+          <div>
+              <h2>{minutes}:{seconds}</h2>
+          </div>
+        );
+    }
+}
+
+class StartButton extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            clicked: false,
+            task: props.task,
+        };
+        this._onClick = this._onClick.bind(this);
+    }
+
+    _onClick() {
+        this.setState({ clicked: true });
+    }
+
+    render() {
+        return (
+            <div>
+                <button onClick={this._onClick}>START</button>
+                {this.state.clicked ? <Timer taskID={this.state.task} /> : null}
+            </div>
+        )
+    }
+
+}
+
 class TaskList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      taskList: props.taskList,
+        taskList: props.taskList,
     };
+    this.startTask = this.startTask.bind(this);
   }
 
   componentDidMount() {
@@ -51,26 +125,31 @@ class TaskList extends Component {
           .then(response => {
               const taskList = response.data;
               this.setState({taskList});
-          })
+          });
+  }
+
+  startTask() {
+      this.setState({ clicked: true });
+
   }
 
   render() {
-    return (
-      <div className="task-list">
-        {this.state.taskList.map(item =>
-          <div className="task-list-item">
-              <div>
-                  <span className="task-name-item"> {item.name} </span>
-                  <span className="task-time-item"> {item.time} mins </span>
-                  <span className="task-points-item"> {item.time / 60 * POINT_HOUR_RATIO} pts</span>
-              </div>
-              <div className="start-button">
-                  <button>START</button>
-              </div>
+      return (
+          <div className="task-list">
+              {this.state.taskList.map(item =>
+                  <div className="task-list-item" key={item.id}>
+                      <div>
+                          <span className="task-name-item"> {item.name} </span>
+                          <span className="task-time-item"> {item.time} mins </span>
+                          <span className="task-points-item"> {item.time / 60 * POINT_HOUR_RATIO} pts</span>
+                      </div>
+                      <div className="start-button">
+                          <StartButton task={item.id}/>
+                      </div>
+                  </div>
+              )}
           </div>
-        )}
-      </div>
-    );
+      );
   }
 }
 
