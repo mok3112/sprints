@@ -39,7 +39,7 @@ class Timer extends Component {
         super(props);
         this.state = {
             taskID: parseInt(props.taskID, 10),
-            time: 0,
+            task: null,
             timerID: null,
         };
 
@@ -49,21 +49,35 @@ class Timer extends Component {
     componentDidMount() {
         axios.get(`http://localhost:8000/sprints/api/tasks/${this.state.taskID}/?format=json`)
             .then(response => {
+                const task = response.data;
+                console.log(task);
                 const time = response.data.time;
-                this.setState({time: time * 60, timerID: setInterval(this.onTick, 1000)});
+                this.setState({task: task, time: time * 60, timerID: setInterval(this.onTick, 1000)});
             });
     }
-
-
+    
     componentWillUnmount() {
         this.setState({ timerID: null });
     }
 
     onTick() {
-        let newTime = this.state.time;
+        let newTime = this.state.time--;
         if (newTime === 0) {
             clearInterval(this.state.timerID);
-
+            const newData = {
+                name: this.state.task.name,
+                time: this.state.task.time,
+                completed: true,
+                id: this.state.taskID
+            };
+            axios.patch(`http://localhost:8000/sprints/api/tasks/${this.state.taskID}/`,
+                {
+                    name: this.state.task.name,
+                    time: this.state.task.time,
+                    completed: true,
+                    id: this.state.task.id
+                })
+                .then(response => console.log(response));
         } else {
             newTime--;
             this.setState({ time: newTime });
@@ -95,17 +109,28 @@ class StartButton extends Component {
             task: props.task,
         };
         this._onClick = this._onClick.bind(this);
+        this.shouldShowTimer = this.shouldShowTimer.bind(this);
     }
 
     _onClick() {
         this.setState({ clicked: true });
     }
 
+    shouldShowTimer() {
+        if (this.state.clicked) {
+            return (
+                <Timer taskID={this.state.task} />
+            )
+        } else {
+            return null;
+        }
+    }
+
     render() {
         return (
             <div>
                 <button onClick={this._onClick}>START</button>
-                {this.state.clicked ? <Timer taskID={this.state.task} /> : null}
+                {this.shouldShowTimer()}
             </div>
         )
     }
@@ -142,9 +167,7 @@ class TaskList extends Component {
   render() {
       return (
           <div className="task-list">
-              {this.state.taskList.filter((item) => {
-                    return !item.completed;
-                }).map(item =>
+              {this.state.taskList.filter((item) => this.checkIfIncomplete(item.completed)).map(item =>
                       <div className="task-list-item" key={item.id}>
                           <div>
                               <span className="task-name-item"> {item.name} </span>

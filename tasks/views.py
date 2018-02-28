@@ -37,11 +37,13 @@ class DetailsView(generics.RetrieveUpdateDestroyAPIView):
     def patch(self, request, *args, **kwargs):
         new_data = None
         if 'pk' in kwargs:
-            if request.is_valid:
-                new_data = request.data
             task = Task.objects.get(id=kwargs.get('pk'))
-            serialized = TaskUpdateSerializer(task, new_data, partial=True)
-            return Response(serialized.data)
+            serialized = TaskUpdateSerializer(task, data=request.data, partial=True)
+            if serialized.is_valid():
+                serialized.save()
+                return Response(serialized.data)
+            else:
+                return Response(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
         else:
             raise KeyError('pk cannot be found')
 
