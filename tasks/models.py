@@ -9,7 +9,7 @@ class Task(models.Model):
     """
     name = models.CharField(max_length=200, help_text='Name of the task')
     time = models.IntegerField(help_text='Time in minutes for the task')
-    completed = False
+    completed = models.BooleanField(help_text='Is the task completed?', default=False)
 
     def __str__(self):
         return str(self.name)

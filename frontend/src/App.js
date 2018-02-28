@@ -63,6 +63,7 @@ class Timer extends Component {
         let newTime = this.state.time;
         if (newTime === 0) {
             clearInterval(this.state.timerID);
+
         } else {
             newTime--;
             this.setState({ time: newTime });
@@ -118,6 +119,7 @@ class TaskList extends Component {
         taskList: props.taskList,
     };
     this.startTask = this.startTask.bind(this);
+    this.checkIfIncomplete = this.checkIfIncomplete.bind(this);
   }
 
   componentDidMount() {
@@ -133,21 +135,28 @@ class TaskList extends Component {
 
   }
 
+  checkIfIncomplete(complete) {
+      return !complete;
+  }
+
   render() {
       return (
           <div className="task-list">
-              {this.state.taskList.map(item =>
-                  <div className="task-list-item" key={item.id}>
-                      <div>
-                          <span className="task-name-item"> {item.name} </span>
-                          <span className="task-time-item"> {item.time} mins </span>
-                          <span className="task-points-item"> {item.time / 60 * POINT_HOUR_RATIO} pts</span>
+              {this.state.taskList.filter((item) => {
+                    return !item.completed;
+                }).map(item =>
+                      <div className="task-list-item" key={item.id}>
+                          <div>
+                              <span className="task-name-item"> {item.name} </span>
+                              <span className="task-time-item"> {item.time} mins </span>
+                              <span className="task-points-item"> {item.time / 60 * POINT_HOUR_RATIO} pts</span>
+                          </div>
+                          <div className="start-button">
+                              <StartButton task={item.id}/>
+                          </div>
                       </div>
-                      <div className="start-button">
-                          <StartButton task={item.id}/>
-                      </div>
-                  </div>
-              )}
+                  )
+              }
           </div>
       );
   }
