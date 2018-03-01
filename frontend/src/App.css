@@ -14,6 +14,7 @@
 
 .sidebar-item {
   margin: 20px 10px;
+  bottom: 0;
 }
 
 .sidebar-link {
@@ -71,4 +72,8 @@ span {
   margin-top: 20px;
   outline: none;
   border-width: 0;
+}
+
+.big-div {
+  height: 100%;
 }

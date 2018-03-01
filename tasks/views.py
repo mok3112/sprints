@@ -2,8 +2,8 @@ from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Task
-from .serializers import TaskCreationSerializer, TaskUpdateSerializer
+from .models import Task, GlobalSettings
+from .serializers import TaskCreationSerializer, TaskUpdateSerializer, GlobalSettingsSerializer
 from rest_framework import mixins
 
 
@@ -35,7 +35,6 @@ class DetailsView(generics.RetrieveUpdateDestroyAPIView):
             raise KeyError('pk cannot be found')
 
     def patch(self, request, *args, **kwargs):
-        new_data = None
         if 'pk' in kwargs:
             task = Task.objects.get(id=kwargs.get('pk'))
             serialized = TaskUpdateSerializer(task, data=request.data, partial=True)
@@ -56,3 +55,48 @@ class DetailsView(generics.RetrieveUpdateDestroyAPIView):
             raise KeyError('pk not found')
 
 
+class SettingsCreateView(generics.CreateAPIView):
+    """
+    Handles the creation of a new set of settings (POST method only)
+    """
+    queryset = GlobalSettings.objects.all()
+    serializer_class = GlobalSettingsSerializer
+
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            serializer.save()
+
+
+class SettingsEditView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Handles GET, PATCH, and DELETE methods for settings.
+    """
+    queryset = GlobalSettings.objects.all()
+    serializer_class = GlobalSettingsSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            settings = GlobalSettings.objects.get(id=kwargs.get('pk'))
+            serializer = GlobalSettingsSerializer(settings)
+            return Response(serializer.data)
+        else:
+            raise KeyError('pk cannot be found')
+
+    def patch(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            settings = GlobalSettings.objects.get(id=kwargs.get('pk'))
+            serializer = GlobalSettingsSerializer(settings, request.data, partial=True)
+            if serializer.is_valid():
+                return Response(serializer.data)
+            else:
+                return Response(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        else:
+            raise KeyError('pk cannot be found')
+
+    def delete(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            settings = GlobalSettings.objects.get(id=kwargs.get('pk'))
+            settings.delete()
+            return Response(status.HTTP_200_OK)
+        else:
+            raise KeyError('pk cannot be found')

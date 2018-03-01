@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios'
 
-const POINT_HOUR_RATIO = 2;
-
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             tasks: [],
+            settings: {},
         };
     }
 
@@ -18,15 +17,20 @@ class App extends Component {
               const tasks = response.data;
               this.setState({tasks});
           });
+      axios.get('http://localhost:8000/sprints/api/settings/1/?format=json')
+          .then(response => {
+              const settings = response.data;
+              this.setState({settings});
+          })
     }
 
 
     render() {
         return (
-        <div>
+        <div className="big-div">
             <Header />
             <Sidebar />
-            <TaskList taskList={this.state.tasks}/>
+            <TaskList taskList={this.state.tasks} settings={this.state.settings}/>
             <TaskAdderForm />
         </div>
     );
@@ -55,7 +59,7 @@ class Timer extends Component {
                 this.setState({task: task, time: time * 60, timerID: setInterval(this.onTick, 1000)});
             });
     }
-    
+
     componentWillUnmount() {
         this.setState({ timerID: null });
     }
@@ -64,12 +68,6 @@ class Timer extends Component {
         let newTime = this.state.time--;
         if (newTime === 0) {
             clearInterval(this.state.timerID);
-            const newData = {
-                name: this.state.task.name,
-                time: this.state.task.time,
-                completed: true,
-                id: this.state.taskID
-            };
             axios.patch(`http://localhost:8000/sprints/api/tasks/${this.state.taskID}/`,
                 {
                     name: this.state.task.name,
@@ -142,6 +140,7 @@ class TaskList extends Component {
     super(props);
     this.state = {
         taskList: props.taskList,
+        settings: props.settings
     };
     this.startTask = this.startTask.bind(this);
     this.checkIfIncomplete = this.checkIfIncomplete.bind(this);
@@ -153,7 +152,13 @@ class TaskList extends Component {
               const taskList = response.data;
               this.setState({taskList});
           });
+      axios.get('http://localhost:8000/sprints/api/settings/1/?format=json')
+          .then(response => {
+              const settings = response.data;
+              this.setState({settings});
+          });
   }
+
 
   startTask() {
       this.setState({ clicked: true });
@@ -165,6 +170,7 @@ class TaskList extends Component {
   }
 
   render() {
+      const point_hour = this.state.settings.point_hour_ratio;
       return (
           <div className="task-list">
               {this.state.taskList.filter((item) => this.checkIfIncomplete(item.completed)).map(item =>
@@ -172,7 +178,7 @@ class TaskList extends Component {
                           <div>
                               <span className="task-name-item"> {item.name} </span>
                               <span className="task-time-item"> {item.time} mins </span>
-                              <span className="task-points-item"> {item.time / 60 * POINT_HOUR_RATIO} pts</span>
+                              <span className="task-points-item"> {item.time / 60 * point_hour} pts</span>
                           </div>
                           <div className="start-button">
                               <StartButton task={item.id}/>
