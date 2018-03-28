@@ -9,7 +9,7 @@ class TaskCreationSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Task
-        fields = ('name', 'time', 'completed', 'id',)
+        fields = ('name', 'time', 'completed', 'user', 'id',)
         read_only_fields = ('completed',)
 
 
@@ -21,7 +21,8 @@ class TaskUpdateSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Task
-        fields = ('name', 'time', 'completed', 'id')
+        fields = ('name', 'time', 'completed', 'user', 'id',)
+        read_only_fields = ('user',)
 
 
 class GlobalSettingsSerializer(serializers.ModelSerializer):

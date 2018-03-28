@@ -1,0 +1,18 @@
+.header {
+  background-color: #202020;
+  height: 50px;
+}
+
+.app-title {
+  font-size: 18pt;
+}
+
+.header-item {
+  color: #ffffff;
+  margin: 20px 30px;
+  text-decoration: none;
+}
+
+span {
+  display: inline-block;
+}

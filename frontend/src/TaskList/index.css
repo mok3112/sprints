@@ -1,0 +1,29 @@
+.task-list {
+  margin-left: 320px;
+}
+
+.task-list-item {
+  padding: 40px 0;
+  margin: 30px;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.task-name-item {
+  padding-left: 20px;
+  width: 700px;
+}
+
+.task-time-item {
+  width: 500px;
+}
+
+.task-points-item {
+  width: 250px;
+  padding-right: 20px;
+
+}
+
+.task-adder {
+  margin-left: 350px;
+}

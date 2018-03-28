@@ -1,0 +1,15 @@
+
+
+
+
+.start-button {
+  position: relative;
+  margin-left: 75%;
+  margin-top: 20px;
+  outline: none;
+  border-width: 0;
+}
+
+.big-div {
+  height: 100%;
+}
