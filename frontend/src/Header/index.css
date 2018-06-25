@@ -1,6 +1,6 @@
 .header {
   background-color: #202020;
-  height: 50px;
+  height: 100px;
 }
 
 .app-title {
@@ -9,7 +9,7 @@
 
 .header-item {
   color: #ffffff;
-  margin: 20px 30px;
+  margin: 35px 30px;
   text-decoration: none;
 }
 

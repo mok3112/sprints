@@ -1,7 +1,3 @@
-/**
- * Top navigation bar for the website.
- * Links to navigate back to the homepage, see info about the app, log in, and sign up.
- */
 import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
@@ -13,8 +9,6 @@ import {
 import {
     TaskAdderForm
 } from "../Forms/index";
-
-import TaskList from "../TaskList/index";
 
 import Header from "../Header/index";
 
@@ -58,7 +52,6 @@ class App extends Component {
         <div className="big-div">
             <Header />
             <Sidebar />
-            <TaskList taskList={this.state.tasks} settings={this.state.settings}/>
             <TaskAdderForm />
         </div>
     );

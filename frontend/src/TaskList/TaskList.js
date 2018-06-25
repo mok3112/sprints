@@ -17,15 +17,26 @@ class TaskList extends Component {
     super(props);
     this.state = {
         isMounted: false,
-        taskList: props.taskList,
-        settings: props.settings
+        taskList: [
+            {
+                name: "",
+                time: 0,
+                completed: false
+            }
+        ],
+        settings: {
+            name: "",
+            point_hour_ratio: 30,
+            daily_high_score: 0,
+            total_points: 0
+        },
+        token: props.token
     };
     this.startTask = this.startTask.bind(this);
     this.checkIfIncomplete = this.checkIfIncomplete.bind(this);
   }
 
   componentDidMount() {
-      this.setState({ isMounted: true });
       axios({
           method: "get",
           url: "http://localhost:8000/sprints/api/tasks/?format=json",
@@ -35,9 +46,11 @@ class TaskList extends Component {
       }).then(response => {
           const taskList = response.data;
           this.setState({taskList});
+          console.log(this.state.taskList);
+          debugger;
       });
 
-        axios({
+      axios({
             method: "get",
             url: "http://localhost:8000/sprints/api/settings/1/?format=json",
             headers: {
@@ -47,6 +60,8 @@ class TaskList extends Component {
             const settings = response.data;
             this.setState(settings);
         });
+
+      this.setState({ isMounted: true });
   }
 
   componentWillUnmount() {
@@ -65,23 +80,27 @@ class TaskList extends Component {
 
   render() {
       const point_hour = this.state.settings.point_hour_ratio;
-      return (
-          <div className="task-list">
-              {this.state.taskList.filter((item) => this.checkIfIncomplete(item.completed)).map(item =>
+      if (this.state.isMounted) {
+          return (
+              <div className="task-list">
+                  {this.state.taskList.filter((item) => this.checkIfIncomplete(item.completed)).map(item =>
                       <div className="task-list-item" key={item.id}>
-                          <div>
+                          <div key={item.id}>
                               <span className="task-name-item"> {item.name} </span>
                               <span className="task-time-item"> {item.time} mins </span>
                               <span className="task-points-item"> {item.time / 60 * point_hour} pts</span>
                           </div>
-                          <div className="start-button">
+                          <div className="start-button" key={item.id}>
                               <StartButton task={item.id}/>
                           </div>
                       </div>
                   )
-              }
-          </div>
-      );
+                  }
+              </div>
+          );
+      } else {
+          return null;
+      }
   }
 }
 

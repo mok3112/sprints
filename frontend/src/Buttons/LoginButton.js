@@ -30,6 +30,9 @@ class LoginButton extends Component {
 
     shouldShowLoginForm() {
         if (this.state.clicked) {
+            let btns = document.getElementsByClassName("login-button");
+            console.log(btns);
+            btns[0].style.visibility = "hidden";
             return (
                 <LoginForm />
             )
@@ -41,8 +44,12 @@ class LoginButton extends Component {
     render() {
         return (
             <div>
-                <a onClick={this._onClick}>Log In</a>
-                {this.shouldShowLoginForm()}
+                <span>
+                    <a className="login-button" onClick={this._onClick}>Log In</a>
+                </span>
+                <span>
+                    {this.shouldShowLoginForm()}
+                </span>
             </div>
         )
     }

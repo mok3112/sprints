@@ -5,6 +5,10 @@
 
 import React, { Component } from "react";
 import axios from "axios";
+import $ from "jquery";
+import TaskList from "../TaskList/TaskList";
+
+import "./index.css"
 
 /**
  * Form Component that has fields for the user's username and password.
@@ -19,11 +23,25 @@ class LoginForm extends Component {
         super(props);
         this.state = {
             username: "",
-            password: ""
+            password: "",
+            token: "",
         };
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.renderTaskList = this.renderTaskList.bind(this);
+        this.submitForm = this.submitForm.bind(this);
+    }
+
+    renderTaskList() {
+        if (this.state.token !== "") {
+            console.log(this.state.token);
+            return (
+                <TaskList token={this.state.token}/>
+            );
+        } else {
+            return null;
+        }
     }
 
     handleUsernameChange(event) {
@@ -45,22 +63,50 @@ class LoginForm extends Component {
                 password: this.state.password
             }
         }).then(response => {
-            if (response.hasOwnProperty("token")) {
-                console.log("Login success");
-            } else {
-                console.log("Login failure");
+            console.log(response);
+            debugger;
+            if (response.data.hasOwnProperty("token")) {
+                this.setState({token: response.data.token});
+            }
+        });
+    }
+
+    submitForm() {
+        const data = {
+            username: this.state.username,
+            password: this.state.password
+        };
+
+        $.ajax({
+            url: "http://localhost:8000/sprints/api/get_auth_token/",
+            type: "POST",
+            data: data,
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                if (result.hasOwnProperty("token")) {
+                    this.setState({ token: result.token });
+                    alert(result.token);
+                }
             }
         });
     }
 
     render() {
         return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <input type="text" onChange={this.handleUsernameChange} placeholder="Username"/>
-                    <input type="password" onChange={this.handlePasswordChange} placeholder="Password"/>
-                    <input type="submit" value="Log in"/>
+            <div className="login-form">
+                <form className="login-form">
+                    <span>
+                        <input className="login-input" type="text" id="id_username" onChange={this.handleUsernameChange} placeholder="Username"/>
+                    </span>
+                    <span>
+                        <input className="login-input" type="password" id="id_password" onChange={this.handlePasswordChange} placeholder="Password"/>
+                    </span>
+                    <span>
+                        <input className="login-input" type="button" onClick={this.handleSubmit} value="Log in"/>
+                    </span>
                 </form>
+                {this.renderTaskList()}
             </div>
         )
     }

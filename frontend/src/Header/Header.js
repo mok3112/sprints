@@ -19,12 +19,12 @@ const Header = () =>
       <div className="topnav header">
         <a href="#" className="header-item app-title">My App</a>
         <a className="active header-item" href="#">About</a>
+        <a href="#signup" className="header-item">Sign Up</a>
         <span>
-            <div>
+            <div className="header-item">
                 <LoginButton />
             </div>
         </span>
-        <a href="#signup" className="header-item">Sign Up</a>
       </div>;
 
 export default Header;
