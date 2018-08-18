@@ -2,6 +2,10 @@
   margin-left: 320px;
 }
 
+.task-list-shifted {
+  margin-left: 1500px;
+}
+
 .task-list-item {
   padding: 40px 0;
   margin: 30px;
