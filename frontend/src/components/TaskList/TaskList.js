@@ -10,6 +10,7 @@ import "./index.css";
 
 import StartTaskButton from "../Buttons"
 import ActiveTask from "../ActiveTask/ActiveTask";
+import AddTaskForm from "../AddTaskForm/AddTaskForm";
 
 /**
  * List of incomplete tasks associated with a user.
@@ -34,6 +35,7 @@ class TaskList extends Component {
       token: props.token,
       focusedTask: null
     };
+    this.updateTaskList = this.updateTaskList.bind(this);
     this.shouldDisplayItem = this.shouldDisplayItem.bind(this);
     this.checkIfIncomplete = this.checkIfIncomplete.bind(this);
     this.handleTaskItemClick = this.handleTaskItemClick.bind(this);
@@ -67,6 +69,20 @@ class TaskList extends Component {
     });
 
     this.setState({ isMounted: true });
+  }
+
+
+  updateTaskList() {
+    axios({
+      method: "get",
+      url: "http://localhost:8000/sprints/api/tasks/?format=json",
+      headers: {
+        Authorization: `Token ${this.state.token}`
+      }
+    }).then(response => {
+      const tasks = response.data;
+      this.setState({ taskList: tasks });
+    });
   }
 
   /**
@@ -134,6 +150,8 @@ class TaskList extends Component {
     if (this.state.isMounted) {
       return (
         <div>
+          <AddTaskForm token={this.state.token} onTaskAdded={this.updateTaskList} />
+
           {this.state.focusedTask != null ?
             <ActiveTask
               task={this.state.focusedTask}
