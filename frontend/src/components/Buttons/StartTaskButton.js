@@ -6,8 +6,8 @@ class StartTaskButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      time: props.time,
-      taskID: props.id,
+      time: props.task.time,
+      taskID: props.task.id,
       token: props.token,
       clicked: false
     };
@@ -18,24 +18,23 @@ class StartTaskButton extends Component {
 
   _onClick() {
     this.setState({ clicked: true });
-
-    const data = {
-      clicked: true,
-      taskID: this.state.taskID
-    };
-
-    this.props.onButtonClick(data);
   }
 
   renderTimer() {
-    return this.state.clicked ? <Timer taskID={this.state.taskID} token={this.state.token} /> : null;
+    return this.state.clicked ? <Timer task={this.props.task} token={this.state.token} /> : null;
   }
 
   render() {
     return (
       <div>
-        <button onClick={this._onClick}>Start</button>
-        {this.renderTimer()}
+        {this.state.clicked ?
+          <Timer
+            task={this.props.task}
+            token={this.props.token}
+            onFinish={this.props.onFinish}
+          /> :
+          <button onClick={this._onClick}>Start</button>
+        }
       </div>
     )
   }

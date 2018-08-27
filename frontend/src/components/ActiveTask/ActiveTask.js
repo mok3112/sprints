@@ -5,7 +5,9 @@
 
 import React, { Component } from 'react';
 
-import Timer from "../Timer";
+import "./index.css";
+
+import { StartTaskButton, BackButton } from "../Buttons/index.js";
 
 /**
  * Class that holds the reference to a task that has just been clicked.
@@ -13,17 +15,14 @@ import Timer from "../Timer";
  */
 class ActiveTask extends Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    const task = props.task;
+    const task = this.props.task;
     return (
-      <div>
+      <div className="active-task">
         <h1>{task.name}</h1>
-        <h2>{task.time}</h2>
-        <Timer task={task} token={props.token} />
+        <h2>{task.time} minutes</h2>
+        <StartTaskButton task={task} token={this.props.token} onFinish={this.props.onFinish} />
+        <BackButton onClick={this.props.onBackClicked} />
       </div>
     )
   }

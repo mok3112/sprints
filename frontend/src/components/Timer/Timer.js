@@ -37,7 +37,11 @@ class Timer extends Component {
         const task = response.data;
         console.log(task);
         const time = response.data.time;
-        this.setState({ task: task, time: time * 60, timerID: setInterval(this.onTick, 1000) });
+        this.setState({
+          task: task,
+          time: time * 60,
+          timerID: setInterval(this.onTick, 1000)
+        });
       })
   }
 
@@ -51,7 +55,7 @@ class Timer extends Component {
       clearInterval(this.state.timerID);
       axios({
         method: "patch",
-        url: `http://localhost:8000/sprints/api/tasks/${this.state.taskID}`,
+        url: `http://localhost:8000/sprints/api/tasks/${this.state.taskID}/`,
         headers: {
           Authorization: `Token ${this.state.token}`
         },
@@ -61,9 +65,11 @@ class Timer extends Component {
           completed: true,
           id: this.state.task.id
         }
-      }).then(response => console.log(response));
+      }).then(response => {
+        console.log(response);
+        this.props.onFinish();
+      });
     } else {
-      newTime--;
       this.setState({ time: newTime });
     }
   }

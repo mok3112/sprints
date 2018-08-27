@@ -1,3 +1,4 @@
-import StartTaskButton from "./StartTaskButton";
+import StartTaskButton from "./StartTaskButton.js";
+import BackButton from "./BackButton.js";
 
-export default StartTaskButton;
+export { StartTaskButton, BackButton };
